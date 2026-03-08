@@ -41,6 +41,11 @@ body {
 a {
     text-decoration: none;
     color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
 }
 
 img {
@@ -183,26 +188,16 @@ img {
 
 .hero-cnc-bg {
     position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 55%;
-    max-width: 650px;
+    inset: 0;
     pointer-events: none;
-    opacity: 0.25;
-    -webkit-mask-image: radial-gradient(ellipse 70% 60% at center, rgba(0,0,0,0.8) 20%, transparent 70%);
-    mask-image: radial-gradient(ellipse 70% 60% at center, rgba(0,0,0,0.8) 20%, transparent 70%);
-    animation: floatCNC 8s ease-in-out infinite;
+    opacity: 0.15;
 }
 
 .hero-cnc-bg img {
     width: 100%;
-    height: auto;
-}
-
-@keyframes floatCNC {
-    0%, 100% { transform: translateY(-50%) scale(1); }
-    50% { transform: translateY(calc(-50% - 15px)) scale(1.02); }
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .hero-content {
@@ -417,7 +412,7 @@ img {
 /* === Materials === */
 .materials-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
 }
 
@@ -425,7 +420,7 @@ img {
     background: var(--dark-card);
     border: 1px solid var(--dark-border);
     border-radius: var(--radius);
-    padding: 32px 24px;
+    overflow: hidden;
     text-align: center;
     transition: all var(--transition);
 }
@@ -436,26 +431,36 @@ img {
     box-shadow: 0 8px 30px rgba(46, 125, 50, 0.15);
 }
 
-.material-icon {
-    color: var(--primary-light);
-    margin-bottom: 16px;
-    opacity: 0.8;
+.material-img {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    background: #1a1a1a;
 }
 
-.material-card:hover .material-icon {
-    opacity: 1;
+.material-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.material-card:hover .material-img img {
+    transform: scale(1.08);
 }
 
 .material-card h3 {
     color: var(--light);
     font-size: 1.05rem;
     font-weight: 700;
+    margin-top: 16px;
     margin-bottom: 6px;
 }
 
 .material-card p {
     color: var(--gray);
     font-size: 0.82rem;
+    padding: 0 12px 20px;
 }
 
 /* === Process === */
@@ -797,11 +802,13 @@ img {
 .services-grid .fade-in:nth-child(2) { transition-delay: 0.1s; }
 .services-grid .fade-in:nth-child(3) { transition-delay: 0.2s; }
 .services-grid .fade-in:nth-child(4) { transition-delay: 0.3s; }
+.services-grid .fade-in:nth-child(5) { transition-delay: 0.4s; }
 
 .materials-grid .fade-in:nth-child(1) { transition-delay: 0s; }
 .materials-grid .fade-in:nth-child(2) { transition-delay: 0.1s; }
 .materials-grid .fade-in:nth-child(3) { transition-delay: 0.2s; }
 .materials-grid .fade-in:nth-child(4) { transition-delay: 0.3s; }
+.materials-grid .fade-in:nth-child(5) { transition-delay: 0.4s; }
 
 /* === Responsive === */
 @media (max-width: 968px) {
@@ -868,21 +875,6 @@ img {
         font-size: 2.2rem;
     }
 
-    .hero-cnc-bg {
-        width: 80%;
-        opacity: 0.12;
-        right: -10%;
-        top: auto;
-        bottom: 0;
-        transform: none;
-        -webkit-mask-image: radial-gradient(ellipse 80% 70% at center, rgba(0,0,0,0.6) 10%, transparent 65%);
-        mask-image: radial-gradient(ellipse 80% 70% at center, rgba(0,0,0,0.6) 10%, transparent 65%);
-    }
-
-    @keyframes floatCNC {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02) translateY(-10px); }
-    }
 
     .hero-stats {
         gap: 28px;
@@ -905,7 +897,7 @@ img {
     }
 
     .materials-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .footer-inner {
@@ -924,8 +916,62 @@ img {
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .header {
+        padding: 10px 0;
+    }
+
+    .logo-img {
+        height: 38px;
+    }
+
+    .logo-name {
+        font-size: 0.95rem;
+    }
+
+    .logo-sub {
+        font-size: 0.5rem;
+    }
+
+    .hero {
+        min-height: 100svh;
+    }
+
+    .hero-content {
+        padding: 100px 0 50px;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    .hero-badge {
+        font-size: 0.7rem;
+        padding: 5px 12px;
+    }
+
     .services-grid {
         grid-template-columns: 1fr;
+    }
+
+    .service-card {
+        padding: 28px 20px;
+    }
+
+    .materials-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .material-card {
+        padding: 24px 16px;
     }
 
     .process-grid {
@@ -934,14 +980,100 @@ img {
 
     .hero-actions {
         flex-direction: column;
+        margin-bottom: 40px;
     }
 
     .btn {
         justify-content: center;
+        padding: 14px 28px;
+        font-size: 0.9rem;
     }
 
     .hero-stats {
-        flex-direction: column;
-        gap: 16px;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .stat-number {
+        font-size: 1.4rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+
+    .section {
+        padding: 60px 0;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+        margin-bottom: 40px;
+    }
+
+    .section-label {
+        font-size: 0.7rem;
+    }
+
+    .gallery-item img {
+        min-height: 200px;
+    }
+
+    .gallery-large img {
+        min-height: 250px;
+    }
+
+    .cta-section {
+        padding: 60px 0;
+    }
+
+    .cta-content h2 {
+        font-size: 1.4rem;
+    }
+
+    .cta-content p {
+        font-size: 0.9rem;
+    }
+
+    .contact-card {
+        padding: 16px;
+    }
+
+    .contact-map iframe {
+        min-height: 280px !important;
+    }
+
+    .whatsapp-float {
+        bottom: 20px;
+        right: 20px;
+        width: 52px;
+        height: 52px;
+    }
+}
+
+/* iPhone SE y pantallas muy pequenas */
+@media (max-width: 360px) {
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .hero-stats {
+        gap: 12px;
+    }
+
+    .stat-number {
+        font-size: 1.2rem;
+    }
+
+    .materials-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Fix para iOS Safari - altura del viewport */
+@supports (-webkit-touch-callout: none) {
+    .hero {
+        min-height: -webkit-fill-available;
     }
 }
