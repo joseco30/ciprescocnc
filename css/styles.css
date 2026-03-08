@@ -354,13 +354,13 @@ img {
 /* === Services === */
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
 }
 
 .service-card {
     background: var(--light-card);
-    padding: 36px 28px;
+    padding: 28px 20px;
     border-radius: var(--radius);
     border: 1px solid #eee;
     transition: all var(--transition);
@@ -375,7 +375,7 @@ img {
 }
 
 .service-number {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 800;
     color: rgba(46, 125, 50, 0.1);
     line-height: 1;
@@ -383,7 +383,7 @@ img {
 }
 
 .service-card h3 {
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 700;
     margin-bottom: 12px;
     color: var(--dark);
@@ -391,7 +391,7 @@ img {
 
 .service-card p {
     color: var(--gray);
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     line-height: 1.7;
 }
 
@@ -518,8 +518,7 @@ img {
 /* === Gallery === */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
 }
 
@@ -537,14 +536,15 @@ img {
 
 .gallery-item img {
     width: 100%;
-    height: 100%;
-    min-height: 220px;
+    height: 320px;
     object-fit: cover;
+    object-position: center;
     transition: transform 0.5s ease;
 }
 
 .gallery-large img {
-    min-height: 460px;
+    height: 100%;
+    min-height: 320px;
 }
 
 .gallery-overlay {
@@ -732,6 +732,90 @@ img {
     box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
 }
 
+/* === Lightbox === */
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.lightbox.active {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    cursor: default;
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: opacity 0.2s;
+    z-index: 201;
+}
+
+.lightbox-close:hover {
+    opacity: 0.7;
+}
+
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 201;
+}
+
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
 /* === Animations === */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(30px); }
@@ -826,7 +910,7 @@ img {
     }
 
     .gallery-large img {
-        min-height: 300px;
+        height: 260px;
     }
 
     .process-connector {
