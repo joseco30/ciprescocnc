@@ -184,6 +184,22 @@ img {
     background:
         radial-gradient(ellipse at 20% 50%, var(--primary-glow) 0%, transparent 60%),
         radial-gradient(ellipse at 80% 20%, rgba(200, 164, 90, 0.1) 0%, transparent 50%);
+    background-size: 200% 200%;
+    animation: gradientShift 12s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    33% { background-position: 100% 25%; }
+    66% { background-position: 50% 100%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
 }
 
 .hero-cnc-bg {
@@ -202,7 +218,7 @@ img {
 
 .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     padding: 120px 0 80px;
 }
 
@@ -345,6 +361,7 @@ img {
     color: var(--dark);
     margin-bottom: 60px;
     letter-spacing: -0.5px;
+    transition: transform 0.1s linear;
 }
 
 .section-title-light {
