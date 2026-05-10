@@ -913,6 +913,7 @@ details[open] .faq-question {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 24px;
 }
 
 .footer-brand {
@@ -923,6 +924,7 @@ details[open] .faq-question {
     font-weight: 700;
     font-size: 0.9rem;
     letter-spacing: 1px;
+    flex-shrink: 0;
 }
 
 .footer-logo {
