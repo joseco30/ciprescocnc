@@ -46,7 +46,7 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-document.querySelectorAll('.service-card, .material-card, .process-step, .gallery-item, .contact-card').forEach(el => {
+document.querySelectorAll('.service-card, .material-card, .process-step, .gallery-item, .contact-card, .reels-scroll').forEach(el => {
     el.classList.add('fade-in');
     observer.observe(el);
 });
@@ -220,6 +220,59 @@ if (canvas) {
     resizeCanvas();
     createParticles();
     window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
+}
+
+// Video Reels - autoplay and modal
+const reelCards = document.querySelectorAll('.reel-card');
+const videoModal = document.getElementById('videoModal');
+const videoModalPlayer = document.getElementById('videoModalPlayer');
+const videoModalClose = document.getElementById('videoModalClose');
+
+if (reelCards.length > 0 && videoModal) {
+    const reelObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
+            if (!video) return;
+            if (entry.isIntersecting) {
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        });
+    }, { threshold: 0.3 });
+
+    reelCards.forEach(card => {
+        reelObserver.observe(card);
+
+        card.addEventListener('click', () => {
+            const video = card.querySelector('video');
+            videoModalPlayer.src = video.src;
+            videoModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            videoModalPlayer.currentTime = 0;
+            videoModalPlayer.muted = false;
+            videoModalPlayer.play().catch(() => {});
+        });
+    });
+
+    function closeVideoModal() {
+        videoModalPlayer.pause();
+        videoModalPlayer.removeAttribute('src');
+        videoModalPlayer.load();
+        videoModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    videoModalClose.addEventListener('click', closeVideoModal);
+    videoModal.addEventListener('click', (e) => {
+        if (e.target === videoModal) closeVideoModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+            closeVideoModal();
+        }
+    });
 }
 
 // Lightbox gallery
