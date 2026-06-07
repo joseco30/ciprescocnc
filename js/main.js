@@ -329,6 +329,18 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') showNext();
 });
 
+// GA4: track WhatsApp CTA clicks as generate_lead events
+document.querySelectorAll('a[href*="wa.me"]').forEach(function(link) {
+    link.addEventListener('click', function() {
+        if (typeof gtag === 'function') {
+            gtag('event', 'generate_lead', {
+                method: 'whatsapp',
+                link_url: this.href
+            });
+        }
+    });
+});
+
 // Touch swipe for lightbox on mobile
 let touchStartX = 0;
 lightbox.addEventListener('touchstart', (e) => {

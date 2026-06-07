@@ -7,7 +7,15 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-3REV3YFL1T');
+      var _gc = {};
+      var _ua = navigator.userAgent;
+      var _ref = document.referrer.toLowerCase();
+      if (!_ref || _ref.indexOf('ciprescocnc.com') !== -1) {
+        if (/WhatsApp/i.test(_ua)) { _gc.campaign_source = 'whatsapp'; _gc.campaign_medium = 'social'; }
+        else if (/Instagram/i.test(_ua)) { _gc.campaign_source = 'instagram'; _gc.campaign_medium = 'social'; }
+        else if (/FBAN|FBAV/i.test(_ua)) { _gc.campaign_source = 'facebook'; _gc.campaign_medium = 'social'; }
+      }
+      gtag('config', 'G-3REV3YFL1T', _gc);
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
