@@ -93,12 +93,12 @@ const cncBg = document.querySelector('.hero-cnc-bg');
 const isDesktop = window.innerWidth > 768;
 
 if (isDesktop) {
+    const hero = document.querySelector('.hero');
     window.addEventListener('scroll', () => {
         const scrollY = window.scrollY;
-        const heroHeight = document.querySelector('.hero').offsetHeight;
 
         // Parallax CNC background
-        if (cncBg && scrollY < heroHeight) {
+        if (cncBg && hero && scrollY < hero.offsetHeight) {
             cncBg.style.transform = `translateY(${scrollY * 0.15}px)`;
         }
 
@@ -252,6 +252,12 @@ if (reelCards.length > 0 && videoModal) {
             videoModalPlayer.currentTime = 0;
             videoModalPlayer.muted = false;
             videoModalPlayer.play().catch(() => {});
+            if (typeof gtag === 'function') {
+                gtag('event', 'select_content', {
+                    content_type: 'video',
+                    item_id: video.src.split('/').pop()
+                });
+            }
         });
     });
 
@@ -298,6 +304,12 @@ function openLightbox(src) {
     lightboxImg.src = src;
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
+    if (typeof gtag === 'function') {
+        gtag('event', 'select_content', {
+            content_type: 'gallery_image',
+            item_id: src.split('/').pop()
+        });
+    }
 }
 
 function closeLightbox() {
