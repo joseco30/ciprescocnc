@@ -742,9 +742,12 @@ details[open] .faq-question {
 }
 
 /* === Gallery === */
+/* Las filas necesitan alto fijo: si son automaticas, la foto destacada
+   impone su alto real (vertical de celular) y deja franjas negras al lado. */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 320px;
     gap: 16px;
 }
 
@@ -755,22 +758,26 @@ details[open] .faq-question {
     cursor: pointer;
 }
 
+/* span en vez de posicion fija: asi dos destacadas no se pisan entre si */
 .gallery-large {
-    grid-column: 1 / 3;
-    grid-row: 1 / 3;
+    grid-column: span 2;
+    grid-row: span 2;
 }
 
 .gallery-item img {
     width: 100%;
-    height: 320px;
+    height: 100%;
     object-fit: cover;
     object-position: center;
     transition: transform 0.5s ease;
 }
 
-.gallery-large img {
-    height: 100%;
-    min-height: 320px;
+/* Categorias de 3 fotos: 3 columnas para no dejar la celda sobrante vacia.
+   Solo en escritorio; abajo de 968px manda el responsive de .gallery-grid. */
+@media (min-width: 969px) {
+    .gallery-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 .gallery-overlay {
@@ -1136,19 +1143,12 @@ details[open] .faq-question {
 
     .gallery-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    .gallery-item img {
-        height: 220px;
+        grid-auto-rows: 220px;
     }
 
     .gallery-large {
-        grid-column: 1 / 3;
-        grid-row: auto;
-    }
-
-    .gallery-large img {
-        height: 240px;
+        grid-column: span 2;
+        grid-row: span 1;
     }
 
     .process-connector {
@@ -1212,18 +1212,11 @@ details[open] .faq-question {
 
     .gallery-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    .gallery-item img {
-        height: 180px;
+        grid-auto-rows: 180px;
     }
 
     .gallery-large {
-        grid-column: 1 / 3;
-    }
-
-    .gallery-large img {
-        height: 200px;
+        grid-column: span 2;
     }
 
     .reel-card {
@@ -1354,18 +1347,11 @@ details[open] .faq-question {
 
     .gallery-grid {
         grid-template-columns: 1fr;
-    }
-
-    .gallery-item img {
-        height: 250px;
+        grid-auto-rows: 250px;
     }
 
     .gallery-large {
         grid-column: auto;
-    }
-
-    .gallery-large img {
-        height: 250px;
     }
 
     .cta-section {
