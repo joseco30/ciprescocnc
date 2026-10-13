@@ -150,6 +150,71 @@
             font-size: 1rem;
         }
 
+        /* ── Barra de categorias (fija bajo el header) ── */
+        .cat-nav {
+            position: sticky;
+            top: var(--header-h, 66px);
+            z-index: 90;
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .cat-nav-list {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            list-style: none;
+            margin: 0;
+            padding: 12px 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .cat-nav-list::-webkit-scrollbar {
+            display: none;
+        }
+        .cat-nav-list a {
+            display: block;
+            white-space: nowrap;
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: 1px solid #2a2a2a;
+            background: #141414;
+            color: #cfcfcf;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.25s, border-color 0.25s, color 0.25s;
+        }
+        .cat-nav-list a:hover {
+            border-color: #43a047;
+            color: #fff;
+        }
+        .cat-nav-list a[aria-current="true"] {
+            background: #2e7d32;
+            border-color: #43a047;
+            color: #fff;
+        }
+        .cat-nav-list a:focus-visible {
+            outline: 2px solid #4caf50;
+            outline-offset: 2px;
+        }
+        .cat-section {
+            scroll-margin-top: calc(var(--header-h, 66px) + 72px);
+        }
+        @media (max-width: 768px) {
+            .cat-nav-list {
+                justify-content: flex-start;
+                padding: 10px 0;
+            }
+            .cat-nav-list a {
+                padding: 7px 14px;
+                font-size: 0.85rem;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+        }
+
         /* Marca la pestaña activa en el nav */
         .nav a.nav-active {
             color: #43a047;
@@ -193,8 +258,21 @@
         </div>
     </section>
 
+    <!-- Barra de categorias -->
+    <nav class="cat-nav" aria-label="Categorías del portafolio">
+        <div class="container">
+            <ul class="cat-nav-list">
+                <li><a href="#tablas">Tablas de picar</a></li>
+                <li><a href="#portavasos">Portavasos</a></li>
+                <li><a href="#letreros">Letreros</a></li>
+                <li><a href="#tallado">Tallado</a></li>
+                <li><a href="#decoracion">Decoración</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <!-- ══════════════════════════════ TABLAS DE PICAR -->
-    <section class="cat-section section-dark">
+    <section id="tablas" class="cat-section section-dark">
         <div class="container">
             <div class="cat-header">
                 <div class="cat-linea"></div>
@@ -294,7 +372,7 @@
     </section>
 
     <!-- ══════════════════════════════ PORTAVASOS -->
-    <section class="cat-section section-dark" style="border-top: 1px solid #1a1a1a;">
+    <section id="portavasos" class="cat-section section-dark" style="border-top: 1px solid #1a1a1a;">
         <div class="container">
             <div class="cat-header">
                 <div class="cat-linea"></div>
@@ -334,7 +412,7 @@
     </section>
 
     <!-- ══════════════════════════════ LETREROS Y SEÑALÉTICA -->
-    <section class="cat-section section-dark" style="border-top: 1px solid #1a1a1a;">
+    <section id="letreros" class="cat-section section-dark" style="border-top: 1px solid #1a1a1a;">
         <div class="container">
             <div class="cat-header">
                 <div class="cat-linea"></div>
@@ -406,7 +484,7 @@
     </section>
 
     <!-- ══════════════════════════════ TALLADO ARTÍSTICO -->
-    <section class="cat-section section-dark" style="border-top: 1px solid #1a1a1a;">
+    <section id="tallado" class="cat-section section-dark" style="border-top: 1px solid #1a1a1a;">
         <div class="container">
             <div class="cat-header">
                 <div class="cat-linea"></div>
@@ -434,7 +512,7 @@
     </section>
 
     <!-- ══════════════════════════════ DECORACIÓN -->
-    <section class="cat-section section-dark" style="border-top: 1px solid #1a1a1a; padding-bottom: 80px;">
+    <section id="decoracion" class="cat-section section-dark" style="border-top: 1px solid #1a1a1a; padding-bottom: 80px;">
         <div class="container">
             <div class="cat-header">
                 <div class="cat-linea"></div>

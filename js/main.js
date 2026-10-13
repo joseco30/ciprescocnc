@@ -222,6 +222,51 @@ if (canvas) {
     window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
 }
 
+// Portfolio category bar - sticky offset and active section
+const catNav = document.querySelector('.cat-nav');
+
+if (catNav) {
+    // Keep the bar right under the fixed header, whose height changes on scroll
+    const setHeaderHeight = () => {
+        document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+    };
+    setHeaderHeight();
+    if ('ResizeObserver' in window) {
+        new ResizeObserver(setHeaderHeight).observe(header);
+    } else {
+        window.addEventListener('resize', setHeaderHeight);
+    }
+
+    const catLinks = Array.from(catNav.querySelectorAll('a[href^="#"]'));
+    const catList = catNav.querySelector('.cat-nav-list');
+
+    const setActiveCategory = (id) => {
+        catLinks.forEach(link => {
+            const isActive = link.getAttribute('href') === '#' + id;
+            if (isActive) {
+                link.setAttribute('aria-current', 'true');
+                // On mobile the list scrolls sideways: keep the active chip visible
+                const linkLeft = link.offsetLeft - catList.offsetLeft;
+                catList.scrollTo({ left: linkLeft - (catList.clientWidth - link.offsetWidth) / 2, behavior: 'smooth' });
+            } else {
+                link.removeAttribute('aria-current');
+            }
+        });
+    };
+
+    // A section is active when it crosses a line just below the sticky bar
+    const catObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) setActiveCategory(entry.target.id);
+        });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+
+    catLinks.forEach(link => {
+        const section = document.querySelector(link.getAttribute('href'));
+        if (section) catObserver.observe(section);
+    });
+}
+
 // Video Reels - arrow navigation
 const reelsScroll = document.getElementById('reelsScroll');
 const reelsPrev = document.querySelector('.reels-nav-prev');
