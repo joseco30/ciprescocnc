@@ -611,6 +611,53 @@ details[open] .faq-question {
 }
 
 /* === Video Reels === */
+.reels-wrapper {
+    position: relative;
+}
+
+.reels-nav {
+    position: absolute;
+    top: calc(50% - 6px);
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(10, 10, 10, 0.75);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background var(--transition), border-color var(--transition), opacity var(--transition);
+}
+
+.reels-nav-prev {
+    left: -20px;
+}
+
+.reels-nav-next {
+    right: -20px;
+}
+
+.reels-nav:hover:not(:disabled) {
+    background: var(--primary);
+    border-color: var(--primary-light);
+}
+
+.reels-nav:focus-visible {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 3px;
+}
+
+.reels-nav:disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .reels-scroll {
     display: flex;
     gap: 16px;
@@ -1221,6 +1268,19 @@ details[open] .faq-question {
 
     .reel-card {
         flex: 0 0 200px;
+    }
+
+    .reels-nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .reels-nav-prev {
+        left: 4px;
+    }
+
+    .reels-nav-next {
+        right: 4px;
     }
 
     .materials-grid {

@@ -222,6 +222,39 @@ if (canvas) {
     window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
 }
 
+// Video Reels - arrow navigation
+const reelsScroll = document.getElementById('reelsScroll');
+const reelsPrev = document.querySelector('.reels-nav-prev');
+const reelsNext = document.querySelector('.reels-nav-next');
+
+if (reelsScroll && reelsPrev && reelsNext) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const updateReelsNav = () => {
+        const maxScroll = reelsScroll.scrollWidth - reelsScroll.clientWidth;
+        const atStart = reelsScroll.scrollLeft <= 4;
+        const atEnd = reelsScroll.scrollLeft >= maxScroll - 4;
+        // Move focus to the other arrow before disabling the one in use
+        if (atStart && document.activeElement === reelsPrev) reelsNext.focus();
+        if (atEnd && document.activeElement === reelsNext) reelsPrev.focus();
+        reelsPrev.disabled = atStart;
+        reelsNext.disabled = atEnd;
+    };
+
+    const scrollReels = (direction) => {
+        reelsScroll.scrollBy({
+            left: direction * reelsScroll.clientWidth * 0.9,
+            behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+    };
+
+    reelsPrev.addEventListener('click', () => scrollReels(-1));
+    reelsNext.addEventListener('click', () => scrollReels(1));
+    reelsScroll.addEventListener('scroll', updateReelsNav, { passive: true });
+    window.addEventListener('resize', updateReelsNav);
+    updateReelsNav();
+}
+
 // Video Reels - autoplay and modal
 const reelCards = document.querySelectorAll('.reel-card');
 const videoModal = document.getElementById('videoModal');
