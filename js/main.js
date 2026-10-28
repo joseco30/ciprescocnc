@@ -345,6 +345,7 @@ if (reelCards.length > 0 && videoModal) {
         videoModalPlayer.load();
         videoModal.classList.remove('active');
         document.body.style.overflow = '';
+        clearShareHash();
     }
 
     videoModalClose.addEventListener('click', closeVideoModal);
@@ -393,6 +394,7 @@ function openLightbox(src) {
 function closeLightbox() {
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
+    clearShareHash();
 }
 
 function showPrev() {
@@ -418,6 +420,79 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') showPrev();
     if (e.key === 'ArrowRight') showNext();
 });
+
+// Share a photo or video by WhatsApp with a direct link (#foto-84, #video-letrero-finca-madera)
+const shareHashPattern = /^#(foto|video)-(.+)$/;
+
+function fileId(src) {
+    return decodeURIComponent(src.split('/').pop()).replace(/\.[^.]+$/, '');
+}
+
+function clearShareHash() {
+    if (shareHashPattern.test(location.hash)) {
+        history.replaceState(null, '', location.pathname + location.search);
+    }
+}
+
+function shareOnWhatsApp(type, src, label) {
+    const link = location.origin + location.pathname + '#' + type + '-' + fileId(src);
+    const intro = type === 'video' ? 'Mira este video de Cipresco CNC' : 'Mira este trabajo de Cipresco CNC';
+    const text = intro + ': ' + label + '\n' + link;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    if (typeof gtag === 'function') {
+        gtag('event', 'share', {
+            method: 'whatsapp',
+            content_type: type === 'video' ? 'video' : 'gallery_image',
+            item_id: src.split('/').pop()
+        });
+    }
+}
+
+const lightboxShare = document.getElementById('lightboxShare');
+if (lightboxShare) {
+    lightboxShare.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = galleryItems[currentIndex];
+        const img = item.querySelector('img');
+        const caption = item.querySelector('.gallery-overlay span');
+        shareOnWhatsApp('foto', img.src, caption ? caption.textContent.trim() : img.alt);
+    });
+}
+
+const videoModalShare = document.getElementById('videoModalShare');
+if (videoModalShare) {
+    videoModalShare.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const card = Array.from(reelCards).find(c => c.querySelector('video').src === videoModalPlayer.src);
+        const caption = card ? card.querySelector('.reel-label') : null;
+        shareOnWhatsApp('video', videoModalPlayer.src, caption ? caption.textContent.trim() : '');
+    });
+}
+
+// Open the shared photo or video when the page loads with its link
+function openFromShareHash() {
+    const match = location.hash.match(shareHashPattern);
+    if (!match) return;
+    const isVideo = match[1] === 'video';
+    const id = decodeURIComponent(match[2]);
+    const items = Array.from(isVideo ? reelCards : galleryItems);
+    const target = items.find(el => {
+        const media = el.querySelector(isVideo ? 'video' : 'img');
+        return media && fileId(media.src) === id;
+    });
+    if (!target) return;
+    target.click();
+    return target;
+}
+
+const sharedTarget = openFromShareHash();
+if (sharedTarget) {
+    // Runs after the forced scroll to top, so closing the modal leaves the item in view
+    window.addEventListener('load', () => {
+        sharedTarget.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
+    });
+}
+window.addEventListener('hashchange', openFromShareHash);
 
 // GA4: track WhatsApp CTA clicks as generate_lead events
 document.querySelectorAll('a[href*="wa.me"]').forEach(function(link) {

@@ -764,7 +764,7 @@ details[open] .faq-question {
 }
 
 .video-modal video {
-    max-height: 90vh;
+    max-height: calc(90vh - 72px);
     max-width: 90vw;
     border-radius: 12px;
     outline: none;
@@ -1042,7 +1042,7 @@ details[open] .faq-question {
 
 .lightbox img {
     max-width: 90vw;
-    max-height: 90vh;
+    max-height: calc(90vh - 72px);
     object-fit: contain;
     border-radius: 8px;
     cursor: default;
@@ -1098,6 +1098,39 @@ details[open] .faq-question {
 .lightbox-prev:hover,
 .lightbox-next:hover {
     background: rgba(255, 255, 255, 0.25);
+}
+
+/* Share by WhatsApp (lightbox and video modal) */
+.share-btn {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: background 0.2s;
+    z-index: 201;
+}
+
+.share-btn:hover {
+    background: var(--primary-dark);
+}
+
+.share-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
 }
 
 /* === Animations === */
