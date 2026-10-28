@@ -319,25 +319,42 @@ if (reelCards.length > 0 && videoModal) {
         });
     }, { threshold: 0.3 });
 
-    reelCards.forEach(card => {
-        reelObserver.observe(card);
+    let currentReelIndex = 0;
 
-        card.addEventListener('click', () => {
-            const video = card.querySelector('video');
-            videoModalPlayer.src = video.src;
-            videoModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            videoModalPlayer.currentTime = 0;
-            videoModalPlayer.muted = false;
-            videoModalPlayer.play().catch(() => {});
-            if (typeof gtag === 'function') {
-                gtag('event', 'select_content', {
-                    content_type: 'video',
-                    item_id: video.src.split('/').pop()
-                });
-            }
-        });
+    function openReel(index) {
+        currentReelIndex = index;
+        const video = reelCards[index].querySelector('video');
+        videoModalPlayer.src = video.src;
+        videoModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        videoModalPlayer.currentTime = 0;
+        videoModalPlayer.muted = false;
+        videoModalPlayer.play().catch(() => {});
+        if (typeof gtag === 'function') {
+            gtag('event', 'select_content', {
+                content_type: 'video',
+                item_id: video.src.split('/').pop()
+            });
+        }
+    }
+
+    // Move between videos without closing; the carousel follows so closing lands on the last one seen
+    function showReel(step) {
+        const index = (currentReelIndex + step + reelCards.length) % reelCards.length;
+        clearShareHash();
+        openReel(index);
+        reelCards[index].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' });
+    }
+
+    reelCards.forEach((card, index) => {
+        reelObserver.observe(card);
+        card.addEventListener('click', () => openReel(index));
     });
+
+    const videoModalPrev = document.getElementById('videoModalPrev');
+    const videoModalNext = document.getElementById('videoModalNext');
+    videoModalPrev.addEventListener('click', (e) => { e.stopPropagation(); showReel(-1); });
+    videoModalNext.addEventListener('click', (e) => { e.stopPropagation(); showReel(1); });
 
     function closeVideoModal() {
         videoModalPlayer.pause();
@@ -354,9 +371,12 @@ if (reelCards.length > 0 && videoModal) {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
-            closeVideoModal();
-        }
+        if (!videoModal.classList.contains('active')) return;
+        if (e.key === 'Escape') closeVideoModal();
+        // A focused player uses the arrow keys to seek
+        if (e.target === videoModalPlayer) return;
+        if (e.key === 'ArrowLeft') showReel(-1);
+        if (e.key === 'ArrowRight') showReel(1);
     });
 }
 
