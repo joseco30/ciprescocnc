@@ -358,6 +358,11 @@ function renderPerfiles() {
 }
 function renderPerfilSel() {
   const s = $('perfil-sel'); s.innerHTML = '';
+  if (!cfg.perfiles.length) {
+    const o = document.createElement('option'); o.value = ''; o.textContent = 'Crea uno en Configuración'; s.appendChild(o);
+    s.disabled = true; return;
+  }
+  s.disabled = false;
   cfg.perfiles.forEach((p) => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.nombre; s.appendChild(o); });
   if (cfg.perfilDefault) s.value = cfg.perfilDefault;
 }
