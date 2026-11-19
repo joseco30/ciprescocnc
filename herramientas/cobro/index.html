@@ -61,9 +61,27 @@
   iframe#preview { width: 100%; height: 520px; border: 1px solid var(--line); border-radius: 10px; background: #fff; margin-top: 10px; }
   .doc-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
   .doc-row:last-child { border-bottom: 0; }
+  #lock { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  #lock .box { width: 100%; max-width: 320px; text-align: center; }
+  #lock img { width: 56px; height: 65px; object-fit: cover; border-radius: 6px; }
+  #lock h2 { font-size: 18px; margin: 12px 0 4px; }
+  #lock input { text-align: center; font-size: 28px; letter-spacing: .5em; padding: 10px; margin-top: 14px; }
+  #lock .btn { width: 100%; margin-top: 12px; }
+  #lock .link { background: none; border: 0; color: var(--muted); font: inherit; font-size: 13px; text-decoration: underline; margin-top: 18px; cursor: pointer; }
 </style>
 </head>
 <body>
+<div id="lock">
+  <div class="box">
+    <img src="../../Fotos/logo.jpg" alt="">
+    <h2 id="lock-title">Cuentas de cobro</h2>
+    <p class="note" id="lock-msg">Escribe tu PIN</p>
+    <input id="lock-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
+    <button class="btn primary" id="lock-ok">Entrar</button>
+    <div class="status err" id="lock-err"></div>
+    <button class="link" id="lock-forgot">Olvidé mi PIN</button>
+  </div>
+</div>
 <header>
   <img src="../../Fotos/logo.jpg" alt="">
   <div><h1>Cuentas de cobro</h1><small>Cipresco · herramienta privada</small></div>
@@ -492,6 +510,44 @@ $('btn-nueva').onclick = () => {
   $('items').innerHTML = ''; addItem(); $('numero').value = cfg.next; $('rut-status').textContent = '';
   $('resultado').classList.add('hidden'); $('preview').classList.add('hidden'); window.scrollTo(0, 0);
 };
+
+// ---------- PIN (lo crea el usuario en cada dispositivo; solo se guarda su huella) ----------
+const PIN_KEY = 'cipresco-cobro-pin';
+async function pinHash(pin, salt) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + ':' + pin));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+function readPin() { try { return JSON.parse(localStorage.getItem(PIN_KEY) || 'null'); } catch (_) { return null; } }
+let pinStep = readPin() ? 'enter' : 'create', firstPin = '';
+function lockUi() {
+  const t = { enter: ['Cuentas de cobro', 'Escribe tu PIN', 'Entrar'], create: ['Crea tu PIN', 'Elige 4 números. Te los pediremos cada vez que abras la herramienta en este dispositivo.', 'Continuar'], confirm: ['Confirma tu PIN', 'Escribe los mismos 4 números otra vez.', 'Guardar PIN'] }[pinStep];
+  $('lock-title').textContent = t[0]; $('lock-msg').textContent = t[1]; $('lock-ok').textContent = t[2];
+  $('lock-forgot').classList.toggle('hidden', pinStep !== 'enter');
+  $('lock-pin').value = ''; $('lock-pin').focus();
+}
+async function lockSubmit() {
+  const v = $('lock-pin').value; const err = $('lock-err'); err.textContent = '';
+  if (!/^\d{4}$/.test(v)) { err.textContent = 'Deben ser 4 números.'; return; }
+  if (pinStep === 'create') { firstPin = v; pinStep = 'confirm'; return lockUi(); }
+  if (pinStep === 'confirm') {
+    if (v !== firstPin) { err.textContent = 'No coinciden. Empieza de nuevo.'; pinStep = 'create'; return lockUi(); }
+    const salt = crypto.getRandomValues(new Uint32Array(2)).join('-');
+    try { localStorage.setItem(PIN_KEY, JSON.stringify({ salt, hash: await pinHash(v, salt) })); } catch (_) {}
+    return unlock();
+  }
+  const p = readPin();
+  if (p && (await pinHash(v, p.salt)) === p.hash) return unlock();
+  err.textContent = 'PIN incorrecto.'; $('lock-pin').value = '';
+}
+function unlock() { $('lock').remove(); sessionStorage.setItem('cobro-unlocked', '1'); }
+$('lock-ok').onclick = lockSubmit;
+$('lock-pin').addEventListener('input', () => { if ($('lock-pin').value.length === 4) lockSubmit(); });
+$('lock-forgot').onclick = async () => {
+  if (!confirm('Esto borra el PIN y TODOS los datos guardados en este dispositivo (beneficiarios, cuentas, firmas y documentos). Si exportaste la configuración, podrás importarla de nuevo. ¿Continuar?')) return;
+  try { localStorage.removeItem(KEY); localStorage.removeItem(PIN_KEY); indexedDB.deleteDatabase('cipresco-docs'); } catch (_) {}
+  location.reload();
+};
+if (sessionStorage.getItem('cobro-unlocked') === '1' && readPin()) $('lock').remove(); else lockUi();
 
 // ---------- Inicio ----------
 function renderAll() { renderPerfiles(); renderPerfilSel(); renderEmpresa(); }
