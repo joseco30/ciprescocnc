@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Cuentas de cobro</title>
+<link rel="icon" href="../../Fotos/logo.jpg">
+<style>
+  :root {
+    --bg: #0f1210; --card: #181c19; --line: #2a302b; --text: #e9ece9; --muted: #9aa39b;
+    --green: #2e7d32; --green-2: #43a047; --gold: #c8964a; --danger: #e05d5d; --input: #111412;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 5; }
+  header img { width: 36px; height: 42px; object-fit: cover; border-radius: 4px; }
+  header h1 { font-size: 17px; margin: 0; }
+  header small { color: var(--muted); display: block; font-size: 12px; }
+  nav { display: flex; gap: 6px; padding: 10px 16px 0; max-width: 760px; margin: 0 auto; }
+  nav button { flex: 1; background: none; border: 1px solid var(--line); color: var(--muted); padding: 9px; border-radius: 8px; font: inherit; cursor: pointer; }
+  nav button.on { background: var(--green); border-color: var(--green); color: #fff; font-weight: 600; }
+  main { max-width: 760px; margin: 0 auto; padding: 12px 16px 120px; }
+  section.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+  section.card h2 { font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; }
+  label { display: block; font-size: 12.5px; color: var(--muted); margin: 8px 0 3px; }
+  input, textarea, select { width: 100%; background: var(--input); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; font: inherit; }
+  textarea { resize: vertical; min-height: 64px; }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--green-2); border-color: transparent; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+  .grid .full { grid-column: 1 / -1; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 9px; padding: 11px 14px; font: inherit; font-weight: 600; cursor: pointer; background: #2a302b; color: var(--text); }
+  .btn.primary { background: var(--green); color: #fff; }
+  .btn.wa { background: #25d366; color: #0b2b16; }
+  .btn.ghost { background: none; border: 1px solid var(--line); }
+  .btn.small { padding: 6px 10px; font-size: 13px; }
+  .btn.danger { color: var(--danger); background: none; border: 1px solid #4a2a2a; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; }
+  .drop:hover { border-color: var(--green-2); }
+  .drop b { color: var(--green-2); }
+  .status { font-size: 13px; margin-top: 8px; color: var(--muted); min-height: 18px; }
+  .status.ok { color: var(--green-2); } .status.err { color: var(--danger); }
+  .item { border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+  .item .grid { grid-template-columns: 1fr 1fr; }
+  .item-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+  .total { font-size: 22px; font-weight: 700; }
+  .letras { color: var(--muted); font-size: 12.5px; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(15,18,16,.96); border-top: 1px solid var(--line); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .bar .inner { max-width: 760px; margin: 0 auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .bar .inner .btn { flex: 1; min-width: 140px; }
+  .note { font-size: 12.5px; color: var(--muted); }
+  .profile { display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+  .profile .who b { display: block; } .profile .who span { font-size: 12.5px; color: var(--muted); }
+  .tag { font-size: 11px; background: var(--green); color: #fff; border-radius: 99px; padding: 1px 8px; margin-left: 6px; }
+  .firma-prev { max-height: 48px; background: #fff; border-radius: 6px; padding: 4px; margin-top: 6px; display: none; }
+  .hidden { display: none !important; }
+  iframe#preview { width: 100%; height: 520px; border: 1px solid var(--line); border-radius: 10px; background: #fff; margin-top: 10px; }
+  .doc-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .doc-row:last-child { border-bottom: 0; }
+</style>
+</head>
+<body>
+<header>
+  <img src="../../Fotos/logo.jpg" alt="">
+  <div><h1>Cuentas de cobro</h1><small>Cipresco · herramienta privada</small></div>
+</header>
+<nav>
+  <button data-tab="nueva" class="on">Nueva</button>
+  <button data-tab="docs">Documentos</button>
+  <button data-tab="config">Configuración</button>
+</nav>
+
+<main>
+  <!-- ============ NUEVA ============ -->
+  <div id="tab-nueva">
+    <section class="card" id="aviso-config" style="display:none">
+      <h2>Falta configurar</h2>
+      <p class="note">Antes de la primera cuenta de cobro, ve a <b>Configuración</b> y crea el perfil del beneficiario (nombre, cédula, cuenta y firma). Esos datos quedan guardados solo en este dispositivo.</p>
+    </section>
+
+    <section class="card">
+      <h2>1. RUT del cliente</h2>
+      <label class="drop" for="rut-file">
+        <div>📄 <b>Toca para cargar el RUT en PDF</b></div>
+        <div class="note">Se lee aquí mismo, no se sube a internet</div>
+      </label>
+      <input type="file" id="rut-file" accept="application/pdf" class="hidden">
+      <div class="status" id="rut-status"></div>
+    </section>
+
+    <section class="card">
+      <h2>2. Cliente (deudor)</h2>
+      <div class="grid">
+        <div class="full"><label>Nombre o razón social</label><input id="c-nombre"></div>
+        <div><label>Nombre comercial</label><input id="c-comercial"></div>
+        <div><label>NIT / C.C.</label><input id="c-nit"></div>
+        <div><label>Dirección</label><input id="c-direccion"></div>
+        <div><label>Ciudad</label><input id="c-ciudad"></div>
+        <div><label>Correo</label><input id="c-correo" type="email"></div>
+        <div><label>Teléfonos</label><input id="c-telefonos"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Servicio</h2>
+      <div id="items"></div>
+      <button class="btn ghost small" id="add-item">+ Agregar otro ítem</button>
+      <div style="margin-top:14px">
+        <div class="note">Total a pagar</div>
+        <div class="total" id="total">$0</div>
+        <div class="letras" id="letras"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Datos de la cuenta</h2>
+      <div class="grid">
+        <div><label>Cuenta de cobro N°</label><input id="numero" type="number" min="1" inputmode="numeric"></div>
+        <div><label>Fecha</label><input id="fecha" type="date"></div>
+        <div><label>Beneficiario (debe a)</label><select id="perfil-sel"></select></div>
+        <div><label>Ciudad de expedición</label><input id="ciudad-exp" value="Caldas, Antioquia"></div>
+      </div>
+    </section>
+
+    <section class="card hidden" id="resultado">
+      <h2>Listo</h2>
+      <p class="note" id="res-nombre"></p>
+      <div class="row">
+        <button class="btn wa" id="btn-share">Enviar por WhatsApp</button>
+        <button class="btn ghost" id="btn-download">Descargar PDF</button>
+        <button class="btn ghost" id="btn-nueva">Nueva cuenta</button>
+      </div>
+      <iframe id="preview" class="hidden" title="Vista previa"></iframe>
+    </section>
+  </div>
+
+  <!-- ============ DOCUMENTOS ============ -->
+  <div id="tab-docs" class="hidden">
+    <section class="card">
+      <h2>Documentos para enviar rápido</h2>
+      <p class="note">Guarda aquí el RUT de Cipresco, la certificación bancaria u otros PDF que te piden seguido. Quedan guardados solo en este dispositivo y los envías con un toque.</p>
+      <div id="docs-list"></div>
+      <label class="btn ghost small" for="doc-file" style="margin-top:10px">+ Agregar documento</label>
+      <input type="file" id="doc-file" accept="application/pdf,image/*" class="hidden">
+    </section>
+  </div>
+
+  <!-- ============ CONFIGURACION ============ -->
+  <div id="tab-config" class="hidden">
+    <section class="card">
+      <h2>Beneficiarios</h2>
+      <p class="note">Quien aparece en "Debe a" y en la información de pago. Puedes tener varios.</p>
+      <div id="perfiles"></div>
+      <button class="btn ghost small" id="add-perfil">+ Agregar beneficiario</button>
+    </section>
+
+    <section class="card hidden" id="perfil-form">
+      <h2 id="perfil-form-title">Beneficiario</h2>
+      <div class="grid">
+        <div class="full"><label>Nombre completo</label><input id="p-nombre"></div>
+        <div><label>C.C.</label><input id="p-cc" inputmode="numeric"></div>
+        <div><label>Celular(es)</label><input id="p-celular"></div>
+        <div><label>Ubicación</label><input id="p-ubicacion" value="Caldas, Antioquia"></div>
+        <div><label>Actividad</label><input id="p-actividad" value="Fabricación y mecanizado CNC en madera"></div>
+        <div><label>Banco</label><input id="p-banco" value="Bancolombia"></div>
+        <div><label>Tipo de cuenta</label><select id="p-tipo"><option>Ahorros</option><option>Corriente</option></select></div>
+        <div class="full"><label>Número de cuenta</label><input id="p-cuenta" inputmode="numeric" autocomplete="off"></div>
+        <div class="full">
+          <label>Firma (imagen PNG o JPG, ideal fondo blanco o transparente)</label>
+          <input type="file" id="p-firma" accept="image/*">
+          <img id="p-firma-prev" class="firma-prev" alt="Firma">
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary" id="p-save">Guardar</button>
+        <button class="btn ghost" id="p-cancel">Cancelar</button>
+        <button class="btn danger" id="p-delete">Eliminar</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Encabezado</h2>
+      <div class="grid">
+        <div><label>Teléfonos del encabezado</label><input id="e-telefonos"></div>
+        <div><label>Régimen</label><input id="e-regimen"></div>
+        <div><label>Próximo N° de cuenta de cobro</label><input id="e-next" type="number" min="1"></div>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn primary" id="e-save">Guardar</button></div>
+    </section>
+
+    <section class="card">
+      <h2>Pasar la configuración a otro dispositivo</h2>
+      <p class="note">Exporta un archivo con tus beneficiarios (incluye números de cuenta y firmas) e impórtalo en el celular o el PC. Envíalo solo a ti mismo y bórralo después.</p>
+      <div class="row">
+        <button class="btn ghost" id="cfg-export">Exportar</button>
+        <label class="btn ghost" for="cfg-import">Importar</label>
+        <input type="file" id="cfg-import" accept="application/json" class="hidden">
+      </div>
+      <div class="status" id="cfg-status"></div>
+    </section>
+  </div>
+</main>
+
+<div class="bar" id="bar">
+  <div class="inner">
+    <button class="btn primary" id="btn-generar">Generar cuenta de cobro</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module">
+import { parseRut } from './rut.js?v=20261118';
+import { buildPdf, numeroALetras, formatCOP, fechaLarga, pad2 } from './cobro.js?v=20261118';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const $ = (id) => document.getElementById(id);
+
+// ---------- Almacenamiento local (solo este dispositivo) ----------
+const KEY = 'cipresco-cobro-v1';
+const DEFAULT_CFG = { empresa: { web: 'ciprescocnc.com', telefonos: '+57 312 762 0578', regimen: 'No responsable de IVA' }, perfiles: [], perfilDefault: null, next: 1 };
+function loadCfg() {
+  try { return Object.assign(structuredClone(DEFAULT_CFG), JSON.parse(localStorage.getItem(KEY) || '{}')); }
+  catch (_) { return structuredClone(DEFAULT_CFG); }
+}
+function saveCfg() {
+  try { localStorage.setItem(KEY, JSON.stringify(cfg)); return true; }
+  catch (e) { alertMsg('No se pudo guardar en este navegador (¿modo incógnito?).'); return false; }
+}
+let cfg = loadCfg();
+const alertMsg = (m) => { const s = $('cfg-status'); s.textContent = m; s.className = 'status err'; };
+
+// IndexedDB para documentos (PDF) guardados
+const idb = () => new Promise((res, rej) => {
+  const r = indexedDB.open('cipresco-docs', 1);
+  r.onupgradeneeded = () => r.result.createObjectStore('docs', { keyPath: 'id' });
+  r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+});
+async function docsAll() { const db = await idb(); return new Promise((res) => { const q = db.transaction('docs').objectStore('docs').getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); }); }
+async function docsPut(d) { const db = await idb(); return new Promise((res, rej) => { const t = db.transaction('docs', 'readwrite'); t.objectStore('docs').put(d); t.oncomplete = res; t.onerror = () => rej(t.error); }); }
+async function docsDel(id) { const db = await idb(); return new Promise((res) => { const t = db.transaction('docs', 'readwrite'); t.objectStore('docs').delete(id); t.oncomplete = res; }); }
+
+// ---------- Pestañas ----------
+document.querySelectorAll('nav button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('nav button').forEach((x) => x.classList.toggle('on', x === b));
+  ['nueva', 'docs', 'config'].forEach((t) => $('tab-' + t).classList.toggle('hidden', t !== b.dataset.tab));
+  $('bar').classList.toggle('hidden', b.dataset.tab !== 'nueva');
+  if (b.dataset.tab === 'docs') renderDocs();
+  window.scrollTo(0, 0);
+}));
+
+// ---------- Logo ----------
+let logoDataUrl = null;
+fetch('../../Fotos/logo.jpg').then((r) => r.blob()).then((b) => new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); }))
+  .then((d) => { logoDataUrl = d; }).catch(() => {});
+
+// ---------- RUT ----------
+$('rut-file').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0]; if (!f) return;
+  const st = $('rut-status'); st.className = 'status'; st.textContent = 'Leyendo RUT…';
+  try {
+    const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise;
+    const tc = await (await pdf.getPage(1)).getTextContent();
+    const items = tc.items.filter((i) => i.str && i.str.trim()).map((i) => ({ str: i.str, x: i.transform[4], y: i.transform[5] }));
+    if (items.length < 20) throw new Error('scan');
+    const r = parseRut(items);
+    if (!r.nombre && !r.nit) throw new Error('vacio');
+    $('c-nombre').value = r.nombre || '';
+    $('c-comercial').value = r.nombreComercial || '';
+    $('c-nit').value = r.nitTexto || '';
+    $('c-direccion').value = r.direccionTexto || '';
+    $('c-ciudad').value = r.ciudadTexto || '';
+    $('c-correo').value = r.correo || '';
+    $('c-telefonos').value = r.telefonos || '';
+    st.className = 'status ok'; st.textContent = '✓ RUT leído. Revisa los datos del cliente.';
+  } catch (e) {
+    st.className = 'status err';
+    st.textContent = e.message === 'scan'
+      ? 'Este RUT parece escaneado (imagen) y no se puede leer. Llena los datos a mano.'
+      : 'No pude leer este PDF como RUT. Llena los datos a mano.';
+  } finally { ev.target.value = ''; }
+});
+
+// ---------- Items ----------
+const parseMoney = (s) => Number(String(s).replace(/[^\d]/g, '')) || 0;
+function addItem(desc = '', cant = 1, val = '') {
+  const div = document.createElement('div'); div.className = 'item';
+  div.innerHTML = `<div class="item-head"><span>Ítem</span><button class="btn small danger" type="button">Quitar</button></div>
+    <label>Descripción del servicio</label><textarea class="i-desc" placeholder="Servicio de fabricación y mecanizado CNC en madera de…"></textarea>
+    <div class="grid"><div><label>Cantidad</label><input class="i-cant" type="number" min="1" inputmode="numeric"></div>
+    <div><label>Valor unitario</label><input class="i-val" inputmode="numeric" placeholder="$0"></div></div>`;
+  div.querySelector('.i-desc').value = desc;
+  div.querySelector('.i-cant').value = cant;
+  const vi = div.querySelector('.i-val'); vi.value = val ? formatCOP(val) : '';
+  vi.addEventListener('input', () => { const n = parseMoney(vi.value); vi.value = n ? formatCOP(n) : ''; updateTotal(); });
+  div.querySelector('.i-cant').addEventListener('input', updateTotal);
+  div.querySelector('button').addEventListener('click', () => { if (document.querySelectorAll('.item').length > 1) { div.remove(); updateTotal(); } });
+  $('items').appendChild(div); updateTotal();
+}
+function getItems() {
+  return [...document.querySelectorAll('.item')].map((d) => ({
+    descripcion: d.querySelector('.i-desc').value.trim(),
+    cantidad: Number(d.querySelector('.i-cant').value) || 0,
+    valorUnitario: parseMoney(d.querySelector('.i-val').value),
+  }));
+}
+function updateTotal() {
+  const t = getItems().reduce((s, i) => s + i.cantidad * i.valorUnitario, 0);
+  $('total').textContent = formatCOP(t);
+  $('letras').textContent = t ? numeroALetras(t) + ' M/CTE' : '';
+}
+$('add-item').addEventListener('click', () => addItem());
+
+// ---------- Perfiles ----------
+let editing = null; let firmaTmp = null;
+function renderPerfiles() {
+  const box = $('perfiles'); box.innerHTML = '';
+  if (!cfg.perfiles.length) box.innerHTML = '<p class="note">Todavía no hay beneficiarios.</p>';
+  cfg.perfiles.forEach((p) => {
+    const el = document.createElement('div'); el.className = 'profile';
+    const masked = p.numeroCuenta ? '••••' + p.numeroCuenta.slice(-4) : 'sin cuenta';
+    el.innerHTML = `<div class="who"><b></b><span></span></div><div class="row"></div>`;
+    el.querySelector('b').textContent = p.nombre || '(sin nombre)';
+    if (cfg.perfilDefault === p.id) el.querySelector('b').insertAdjacentHTML('beforeend', '<span class="tag">predeterminado</span>');
+    el.querySelector('.who span').textContent = `${p.banco || ''} ${p.tipoCuenta || ''} ${masked}${p.firma ? ' · con firma' : ' · sin firma'}`;
+    const row = el.querySelector('.row');
+    if (cfg.perfilDefault !== p.id) {
+      const d = document.createElement('button'); d.className = 'btn small ghost'; d.textContent = 'Predeterminar';
+      d.onclick = () => { cfg.perfilDefault = p.id; saveCfg(); renderPerfiles(); renderPerfilSel(); }; row.appendChild(d);
+    }
+    const e = document.createElement('button'); e.className = 'btn small'; e.textContent = 'Editar';
+    e.onclick = () => openPerfil(p); row.appendChild(e);
+    box.appendChild(el);
+  });
+  $('aviso-config').style.display = cfg.perfiles.length ? 'none' : 'block';
+}
+function renderPerfilSel() {
+  const s = $('perfil-sel'); s.innerHTML = '';
+  cfg.perfiles.forEach((p) => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.nombre; s.appendChild(o); });
+  if (cfg.perfilDefault) s.value = cfg.perfilDefault;
+}
+function openPerfil(p) {
+  editing = p || null; firmaTmp = p ? p.firma || null : null;
+  $('perfil-form').classList.remove('hidden');
+  $('perfil-form-title').textContent = p ? 'Editar beneficiario' : 'Nuevo beneficiario';
+  const v = p || { ubicacion: 'Caldas, Antioquia', actividad: 'Fabricación y mecanizado CNC en madera', banco: 'Bancolombia', tipoCuenta: 'Ahorros' };
+  $('p-nombre').value = v.nombre || ''; $('p-cc').value = v.cc || ''; $('p-celular').value = v.celular || '';
+  $('p-ubicacion').value = v.ubicacion || ''; $('p-actividad').value = v.actividad || ''; $('p-banco').value = v.banco || '';
+  $('p-tipo').value = v.tipoCuenta || 'Ahorros'; $('p-cuenta').value = v.numeroCuenta || '';
+  $('p-firma').value = '';
+  const prev = $('p-firma-prev'); prev.style.display = firmaTmp ? 'block' : 'none'; if (firmaTmp) prev.src = firmaTmp;
+  $('p-delete').classList.toggle('hidden', !p);
+  $('perfil-form').scrollIntoView({ behavior: 'smooth' });
+}
+$('add-perfil').onclick = () => openPerfil(null);
+$('p-cancel').onclick = () => $('perfil-form').classList.add('hidden');
+$('p-firma').addEventListener('change', (ev) => {
+  const f = ev.target.files[0]; if (!f) return;
+  const img = new Image(); const url = URL.createObjectURL(f);
+  img.onload = () => { // reducir tamano para que quepa en el almacenamiento local
+    const h = Math.min(160, img.height), w = Math.round(img.width * h / img.height);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    firmaTmp = c.toDataURL('image/png'); URL.revokeObjectURL(url);
+    const prev = $('p-firma-prev'); prev.src = firmaTmp; prev.style.display = 'block';
+  };
+  img.src = url;
+});
+$('p-save').onclick = () => {
+  const p = editing || { id: 'p' + Date.now() };
+  Object.assign(p, {
+    nombre: $('p-nombre').value.trim(), cc: $('p-cc').value.trim(), celular: $('p-celular').value.trim(),
+    ubicacion: $('p-ubicacion').value.trim(), actividad: $('p-actividad').value.trim(), banco: $('p-banco').value.trim(),
+    tipoCuenta: $('p-tipo').value, numeroCuenta: $('p-cuenta').value.trim(), firma: firmaTmp,
+  });
+  if (!p.nombre) { $('p-nombre').focus(); return; }
+  if (!editing) cfg.perfiles.push(p);
+  if (!cfg.perfilDefault) cfg.perfilDefault = p.id;
+  if (saveCfg()) { $('perfil-form').classList.add('hidden'); renderPerfiles(); renderPerfilSel(); }
+};
+$('p-delete').onclick = () => {
+  if (!editing) return;
+  cfg.perfiles = cfg.perfiles.filter((x) => x !== editing);
+  if (cfg.perfilDefault === editing.id) cfg.perfilDefault = cfg.perfiles[0]?.id || null;
+  saveCfg(); $('perfil-form').classList.add('hidden'); renderPerfiles(); renderPerfilSel();
+};
+
+// ---------- Encabezado / consecutivo ----------
+function renderEmpresa() {
+  $('e-telefonos').value = cfg.empresa.telefonos || ''; $('e-regimen').value = cfg.empresa.regimen || '';
+  $('e-next').value = cfg.next || 1; $('numero').value = cfg.next || 1;
+}
+$('e-save').onclick = () => {
+  cfg.empresa.telefonos = $('e-telefonos').value.trim(); cfg.empresa.regimen = $('e-regimen').value.trim();
+  cfg.next = Math.max(1, Number($('e-next').value) || 1);
+  if (saveCfg()) { renderEmpresa(); const s = $('cfg-status'); s.className = 'status ok'; s.textContent = '✓ Guardado'; }
+};
+
+// ---------- Exportar / importar ----------
+$('cfg-export').onclick = () => {
+  const blob = new Blob([JSON.stringify(cfg)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cipresco-cobro-config.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+};
+$('cfg-import').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0]; if (!f) return; const s = $('cfg-status');
+  try {
+    const data = JSON.parse(await f.text());
+    if (!Array.isArray(data.perfiles)) throw new Error();
+    cfg = Object.assign(structuredClone(DEFAULT_CFG), data);
+    if (saveCfg()) { renderAll(); s.className = 'status ok'; s.textContent = '✓ Configuración importada. Ya puedes borrar el archivo.'; }
+  } catch (_) { s.className = 'status err'; s.textContent = 'Ese archivo no es una configuración válida.'; }
+  ev.target.value = '';
+});
+
+// ---------- Documentos rapidos ----------
+async function shareOrDownload(blob, name, text) {
+  const file = new File([blob], name, { type: blob.type || 'application/pdf' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: name, text }); return; }
+    catch (e) { if (e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+async function renderDocs() {
+  const box = $('docs-list'); box.innerHTML = '';
+  let docs = [];
+  try { docs = await docsAll(); } catch (_) { box.innerHTML = '<p class="note">Este navegador no permite guardar documentos.</p>'; return; }
+  if (!docs.length) box.innerHTML = '<p class="note">No hay documentos guardados.</p>';
+  docs.sort((a, b) => a.id - b.id).forEach((d) => {
+    const row = document.createElement('div'); row.className = 'doc-row';
+    row.innerHTML = '<span></span><div class="row"></div>';
+    row.querySelector('span').textContent = d.name;
+    const s = document.createElement('button'); s.className = 'btn small wa'; s.textContent = 'Enviar';
+    s.onclick = () => shareOrDownload(d.blob, d.name);
+    const x = document.createElement('button'); x.className = 'btn small danger'; x.textContent = 'Quitar';
+    x.onclick = async () => { await docsDel(d.id); renderDocs(); };
+    row.querySelector('.row').append(s, x); box.appendChild(row);
+  });
+}
+$('doc-file').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0]; if (!f) return;
+  await docsPut({ id: Date.now(), name: f.name, blob: f }); ev.target.value = ''; renderDocs();
+});
+
+// ---------- Generar ----------
+let lastBlob = null, lastName = '';
+$('btn-generar').onclick = () => {
+  const perfil = cfg.perfiles.find((p) => p.id === $('perfil-sel').value);
+  if (!perfil) { document.querySelector('nav button[data-tab=config]').click(); return; }
+  const items = getItems().filter((i) => i.descripcion || i.valorUnitario);
+  const nombre = $('c-nombre').value.trim();
+  if (!nombre) { $('c-nombre').focus(); return; }
+  if (!items.length || !items.every((i) => i.descripcion && i.cantidad > 0 && i.valorUnitario > 0)) {
+    alert('Revisa los ítems: cada uno necesita descripción, cantidad y valor.'); return;
+  }
+  const numero = Math.max(1, Number($('numero').value) || 1);
+  const fecha = $('fecha').value;
+  const data = {
+    numero,
+    ciudadFecha: `${$('ciudad-exp').value.trim() || 'Caldas, Antioquia'}, ${fechaLarga(fecha)}`,
+    cliente: {
+      nombre: nombre.toUpperCase(), nombreComercial: $('c-comercial').value.trim(), nitTexto: $('c-nit').value.trim(),
+      direccionTexto: $('c-direccion').value.trim(), ciudadTexto: $('c-ciudad').value.trim(),
+      correo: $('c-correo').value.trim(), telefonos: $('c-telefonos').value.trim(),
+    },
+    items,
+  };
+  const { doc } = buildPdf(window.jspdf.jsPDF, data, { empresa: cfg.empresa, perfil }, logoDataUrl);
+  lastBlob = doc.output('blob');
+  const corto = nombre.replace(/[\\/:*?"<>|]/g, '').slice(0, 60).trim().replace(/\.+$/, '');
+  lastName = `Cuenta de Cobro N° ${pad2(numero)} - ${corto}.pdf`;
+  if (numero >= (cfg.next || 1)) { cfg.next = numero + 1; saveCfg(); $('e-next').value = cfg.next; }
+  $('res-nombre').textContent = lastName;
+  $('resultado').classList.remove('hidden');
+  const ifr = $('preview');
+  if (window.matchMedia('(min-width: 800px)').matches) { ifr.src = URL.createObjectURL(lastBlob); ifr.classList.remove('hidden'); }
+  $('resultado').scrollIntoView({ behavior: 'smooth' });
+};
+$('btn-share').onclick = () => lastBlob && shareOrDownload(lastBlob, lastName);
+$('btn-download').onclick = () => {
+  if (!lastBlob) return;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(lastBlob); a.download = lastName; a.click();
+};
+$('btn-nueva').onclick = () => {
+  ['c-nombre', 'c-comercial', 'c-nit', 'c-direccion', 'c-ciudad', 'c-correo', 'c-telefonos'].forEach((id) => { $(id).value = ''; });
+  $('items').innerHTML = ''; addItem(); $('numero').value = cfg.next; $('rut-status').textContent = '';
+  $('resultado').classList.add('hidden'); $('preview').classList.add('hidden'); window.scrollTo(0, 0);
+};
+
+// ---------- Inicio ----------
+function renderAll() { renderPerfiles(); renderPerfilSel(); renderEmpresa(); }
+const hoy = new Date(); $('fecha').value = `${hoy.getFullYear()}-${pad2(hoy.getMonth() + 1)}-${pad2(hoy.getDate())}`;
+addItem();
+renderAll();
+</script>
+</body>
+</html>
